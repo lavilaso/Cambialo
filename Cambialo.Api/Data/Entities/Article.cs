@@ -12,6 +12,9 @@ namespace Cambialo.Api.Data.Entities
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }
+        [Required]
+        public Guid UserId { get; set; }
+        public User User { get; set; }
         public ArticleStatus Status { get; set; }   
 
         public Guid? RequestedInChangeId { get; set; }

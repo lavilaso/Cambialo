@@ -11,6 +11,12 @@ namespace Cambialo.Api.Data.Entities
     {
         public DateTime StartDate { get; set; }
         public DateTime? FinishedDate { get; set; }
+        [Required]
+        public Guid CreatorUserId { get; set; }
+        public User CreatorUser { get; set; }
+        [Required]
+        public Guid ReceivedUserId { get; set; }
+        public User ReceivedUser { get; set; }
         public ChangeTypes ChangeType { get; set; }
         public ChangeStatus ChangeStatus { get; set; }
 
