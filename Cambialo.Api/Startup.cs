@@ -46,6 +46,7 @@ namespace Cambialo.Api
                 cfg.Password.RequireNonAlphanumeric = false;
                 cfg.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +63,12 @@ namespace Cambialo.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cambialo");
+            });
 
             app.UseAuthorization();
 
