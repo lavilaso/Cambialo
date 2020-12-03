@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Cambialo.Api.Data;
 using Cambialo.Api.Data.Entities;
+using Cambialo.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,15 +23,18 @@ namespace Cambialo.Api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            this.env = env;
         }
 
         public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment env;
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env)
+        public void ConfigureServices(IServiceCollection services/*, IWebHostEnvironment env*/)
         {
             services.AddControllers();
             services.AddApiVersioning(config =>
@@ -40,7 +44,7 @@ namespace Cambialo.Api
             });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<User   , IdentityRole<Guid>>(cfg =>
+            services.AddIdentity<User, IdentityRole<Guid>>(cfg =>
             {
                 cfg.User.RequireUniqueEmail = true;
                 cfg.Password.RequireDigit = false;
@@ -49,6 +53,9 @@ namespace Cambialo.Api
                 cfg.Password.RequireNonAlphanumeric = false;
                 cfg.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddScoped<IAccountService, AccountService>();
+            services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
 
             services.AddAuthentication(options =>
             {
