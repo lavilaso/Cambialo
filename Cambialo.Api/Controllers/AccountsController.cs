@@ -20,10 +20,10 @@ namespace Cambialo.Api.Controllers
             this.accountService = accountService;
         }
 
-        [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterRequest model)
         {
-            return Ok(await Task.FromResult<string>("Test"));
+            return Ok(await accountService.RegisterAsync(model));
         }
     }
 }

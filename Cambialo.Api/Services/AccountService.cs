@@ -1,5 +1,6 @@
 ﻿using Cambialo.Api.Data.Entities;
 using Cambialo.Api.Models.Requests;
+using Cambialo.Api.Models.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
@@ -27,14 +28,54 @@ namespace Cambialo.Api.Services
             this.signInManager = signInManager;
         }
 
-        public async Task<int> AuthenticateAsync(AuthenticateRequest authenticateRequest)
+        public async Task<Response<string>> RegisterAsync(RegisterRequest registerRequest)
         {
-            return await Task.FromResult<int>(0);
+            var user = await userManager.FindByEmailAsync(registerRequest.Email);
+
+            if (user != null)
+            {
+                return new Response<string>("Usuario no creado.", new List<string>() { "El usuario ya existe."});
+            }
+
+            user = new User()
+            {
+                FirstName = registerRequest.FirstName,
+                LastName = registerRequest.LastName,
+                Email = registerRequest.Email,
+                UserName = registerRequest.Email,
+                RegistrationDate = DateTime.UtcNow
+            };
+
+            var result = await userManager.CreateAsync(user, registerRequest.Password);
+
+            if (result.Succeeded)
+            {
+                return new Response<string>("Usuario creado correctamente.");
+            }
+
+            return new Response<string>("Usuario no creado.", result.Errors
+                .Select(e => e.Description).ToList());
+
+            //TODO: Refactorizar esto apra para usar Wrapper o ResultPatterm o exceptions
         }
 
-        public async Task<int> RegisterAsync(RegisterRequest registerRequest)
+        /*
+        public async Task<string> Authenticate(AuthenticateRequest authenticateRequest)
         {
-            return await Task.FromResult<int>(0);
+            var user = await userManager.FindByEmailAsync(authenticateRequest.Email);
+
+            if (user == null)
+            {
+                return $"No hay usuario con el email {authenticateRequest.Email}";
+            }
+
+            if (await !userManager.CheckPasswordAsync(user, authenticateRequest.Password))
+            {
+                return $"Password incorrecta.";
+            }
+
+
         }
+        */
     }
 }
