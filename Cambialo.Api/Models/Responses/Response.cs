@@ -14,7 +14,14 @@ namespace Cambialo.Api.Models.Responses
 
         public Response(string message, T data = default)
         {
-            Succeeded = true;
+            if (data == null)
+            {
+                Succeeded = false;
+            }
+            else
+            {
+                Succeeded = true;
+            }
             Message = message;
             Data = data;
         }

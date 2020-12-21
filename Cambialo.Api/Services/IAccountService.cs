@@ -6,7 +6,7 @@ namespace Cambialo.Api.Services
 {
     public interface IAccountService
     {
-        //Task<string> AuthenticateAsync(AuthenticateRequest authenticateRequest);
+        Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticateRequest authenticateRequest);
         Task<Response<string>> RegisterAsync(RegisterRequest registerRequest);
     }
 }   

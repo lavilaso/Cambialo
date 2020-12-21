@@ -25,5 +25,19 @@ namespace Cambialo.Api.Controllers
         {
             return Ok(await accountService.RegisterAsync(model));
         }
+
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
+        {
+
+            var result = await accountService.AuthenticateAsync(model);
+
+            if (!result.Succeeded)
+            {
+                return NotFound(result.Message); 
+                
+            }
+            return Ok(result);
+        }
     }
 }
