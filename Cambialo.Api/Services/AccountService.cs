@@ -54,7 +54,7 @@ namespace Cambialo.Api.Services
 
             if (result.Succeeded)
             {
-                return new Response<string>("Usuario creado correctamente.");
+                return new Response<string>("Usuario creado correctamente.", true);
             }
 
             return new Response<string>("Usuario no creado.", result.Errors
