@@ -32,7 +32,7 @@ namespace Cambialo.Api.Controllers
 
             var result = await accountService.AuthenticateAsync(model);
 
-            if (!result.Succeeded)
+            if (!result.Succeded)
             {
                 return NotFound(result.Message); 
                 
