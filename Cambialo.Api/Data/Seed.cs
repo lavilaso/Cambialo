@@ -15,6 +15,7 @@ namespace Cambialo.Api.Data
         {
             try
             {
+                await dbContext.Database.EnsureDeletedAsync();
                 await dbContext.Database.EnsureCreatedAsync();
             }
             catch (Exception ex)
@@ -23,38 +24,54 @@ namespace Cambialo.Api.Data
                 Debug.WriteLine(ex.Message);
             }
 
-            if (!userManager.Users.Any())
+            var user1 = GenerateUser("Luis", "Avila", "avilaluis0@hotmail.com", DateTime.UtcNow);
+            var user2 = GenerateUser("Juan", "Avila", "ultron_lmn4@hotmail.com", DateTime.UtcNow);
+
+
+            try
             {
-                var user1 = GenerateUser("Luis", "Avila", "avilaluis0@hotmail.com", DateTime.UtcNow);
-                var user2 = GenerateUser("Juan", "Avila", "ultron_lmn4@hotmail.com", DateTime.UtcNow);
+                await userManager.CreateAsync(user1, "123456");
+                await userManager.CreateAsync(user2, "123456");
+            }
+            catch (Exception ex)
+            {
 
-                try
-                {
-                    await userManager.CreateAsync(user1, "123456");
-                    await userManager.CreateAsync(user2, "123456");
-                }
-                catch (Exception ex)
-                {
+                Debug.WriteLine(ex.Message);
+            }
 
-                    Debug.WriteLine(ex.Message);
-                }
-
-                await dbContext.Articles.AddAsync(GenerateArticle("Celular Moto G 4 Play",
+            await dbContext.Articles.AddAsync(GenerateArticle("Celular Moto G 4 Play",
                     "Celular Moto G 4 Play en excelente estado y 4 años de uso.",
                     user1));
-                await dbContext.Articles.AddAsync(GenerateArticle("Impresora HP Disject 3050",
-                    "Impresora multifuncional con 5 años en excelente estado.",
-                    user2));
 
-                try
-                {
-                    await dbContext.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
+            var articleUser2 = GenerateArticle("Impresora HP Disject 3050",
+                "Impresora multifuncional con 5 años en excelente estado.",
+                user2);
 
-                    Debug.WriteLine(ex.Message);
-                }
+            await dbContext.Articles.AddAsync(articleUser2);
+
+            await dbContext.Changes.AddAsync(new Change()
+            {
+                Id = Guid.NewGuid(),
+                ChangeStatus = Enums.ChangeStatus.Opened,
+                ChangeType = Enums.ChangeTypes.Request,
+                CreatorUser = user1,
+                ReceivedUser = user2,
+                RequestedArticles = new List<Article>()
+                {
+                    articleUser2
+                },
+                StartDate = DateTime.UtcNow
+            });
+
+
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                Debug.WriteLine(ex.Message);
             }
         }
 

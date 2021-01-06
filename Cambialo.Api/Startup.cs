@@ -55,6 +55,7 @@ namespace Cambialo.Api
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IChangesService, ChangesService>();
             services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
 
             services.AddAuthentication(options =>

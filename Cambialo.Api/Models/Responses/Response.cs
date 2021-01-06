@@ -16,6 +16,7 @@ namespace Cambialo.Api.Models.Responses
         {
             Message = message;
             Succeded = succeded;
+            Data = data;
 
         }
 
